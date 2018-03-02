@@ -1,28 +1,40 @@
-# Created by Manish Rangari <linuxtricksfordevops@gmail.com>
-
-# YellowDog Repo to create AWS resources using Terraform and configuration management using Ansible to deploy a sample application in Tomcat. The tarrform scripts can be heavily variablized but in this guide I am keeping it simple.
+#  YellowDog Repo to create AWS resources using Terraform and configuration management using Ansible to deploy a sample application in Tomcat. The tarrform scripts can be heavily variablized but in this guide I am keeping it simple.
 
 
-This will create the following AWS resources
+# This will create the following AWS resources
 
 a) VPC with CIDR of 192.168.0.0/20
+
 b) 1 Internet Gateway
+
 c) 2 Private Subnet for application servers both in different AZ
+
 d) 2 Private Subnets for ELB both in different AZ
+
 e) Make the route entry to make respective subnets public and private
+
 f) NAT Gateway for accessing internet from private subnet machines
+
 g) Assign an EIP to NAT Gateway.
+
 h) Security Groups for ELB and app server with proper rules
+
 i) ELB in two AZs with app server attached
+
 j) 2 EC2 instances which will use local-exec to run ansible playbook to install and configure the application.
+
 k) Ansible uses dynamic inventory to identify the targets
+
 l) There are three roles in ansible, one for configuring java, another for configuring tomcat and finally one for delpoyment.
 
-Pre-requisite for running this
+# Pre-requisite for running this
 
 1. Make sure you setup these environment variable
+
 export AWS_ACCESS_KEY_ID="xxxxxxxxxxxxxxxxxxxxxxx"
+
 export AWS_SECRET_ACCESS_KEY="yyyyyyyyyyyyyyyyyyyyyyyyy"
+
 export AWS_DEFAULT_REGION="us-east-2"
 
 2. Install ansible and terraform on the machine where you are going to run this.
