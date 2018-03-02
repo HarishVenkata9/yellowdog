@@ -1,0 +1,2 @@
+war_file_link: "https://tomcat.apache.org/tomcat-8.0-doc/appdev/sample/sample.war"
+war_file_name: "{{ lookup('pipe', 'echo {{ war_file_link }} | rev | cut -d/ -f 1 | rev') }}"

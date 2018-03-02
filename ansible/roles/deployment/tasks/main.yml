@@ -1,0 +1,37 @@
+---
+
+- name: Check if existing artifact exists
+  stat: path=/opt/tomcat/webapps/{{ war_file_name }}
+  register: artifact_file_existance
+
+- name: Make sure tomcat service is stopped
+  systemd: state=stopped name=tomcat
+
+- name: Remove existing artifact
+  file: path=/opt/tomcat/webapps/{{ war_file_name }} state=absent
+  when: artifact_file_existance.stat.exists == True
+
+- name: Get artifact to webapps folder
+  get_url: url="{{war_file_link}}" dest=/opt/tomcat/webapps/sample.war owner=tomcat group=tomcat mode=0644
+
+- name: Change the ownership to tomcat
+  file: dest=/opt/tomcat/webapps owner=tomcat group=tomcat recurse=yes
+
+- name: Start tomcat service
+  systemd: state=started name=tomcat
+
+- name: wait for tomcat to start
+  wait_for: port=8080
+
+- name: Wait 300 seconds, but only start checking after 60 seconds
+  wait_for_connection:
+    delay: 60
+    timeout: 300
+
+- name: Check if the application returns 200 by using GET method
+  uri: url="http://localhost:8080/sample/" return_content=yes
+  register: result
+#
+- name: Fail if Sample is not in the result
+  fail:
+  when: "'Sample' not in result.content"
